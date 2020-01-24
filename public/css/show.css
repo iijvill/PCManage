@@ -1,0 +1,43 @@
+#fixedTableArea {
+    width: 590px;
+    height: 200px;
+    background-color: #DDFFFF;
+}
+#topLeftArea {
+    float: left;
+}
+#topRightArea {
+    width: 400px;
+    float: left;
+    overflow: hidden;
+}
+#bottomLeftArea {
+    float: left;
+    height: 170px;
+    overflow: hidden;
+}
+#bottomRightArea {
+    width: 400px;
+    height: 170px;  
+    overflow: scroll;
+}
+ 
+.fixedTable {
+    border-collapse: collapse;
+}
+.fixedTable td {
+    border: 1px solid #888;
+    min-width: 90px;
+    max-width: 90px;
+    overflow: hidden;
+    white-space: nowrap;
+    height: 30px;
+}
+.fixedTable td.dummyColumn {
+    width: 17px;
+    border: 0px;
+}
+.fixedTable td.dummyRow {
+    height: 18px;
+    border: 0px;
+}

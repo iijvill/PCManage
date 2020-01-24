@@ -4,19 +4,19 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePasswordResetsTable extends Migration
+class CreateAntivirusInfosTable extends Migration
 {
     /**
      * Run the migrations.
-     *
+     *　ウイルス対策情報
      * @return void
      */
     public function up()
     {
-        Schema::create('password_resets', function (Blueprint $table) {
-            $table->string('email')->index();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
+        Schema::create('antivirus_infos', function (Blueprint $table) {
+            $table->tinyIncrements('antivirus_id');
+            $table->string('antivirus_name',50);
+            $table->date('limit')->nullable();
         });
     }
 
@@ -27,6 +27,6 @@ class CreatePasswordResetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('password_resets');
+        Schema::dropIfExists('antivirus_infos');
     }
 }

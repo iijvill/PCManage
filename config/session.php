@@ -31,7 +31,8 @@ return [
     |
     */
 
-    'lifetime' => env('SESSION_LIFETIME', 120),
+    //セッション有効期限 = 3ヶ月
+    'lifetime' => 60 * 24 * 7,
 
     'expire_on_close' => false,
 

@@ -14,8 +14,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
-        'passwords' => 'users',
+        'guard' => 'user',
+        'passwords' => 'user',
     ],
 
     /*
@@ -36,15 +36,25 @@ return [
     */
 
     'guards' => [
-        'web' => [
+        // 'web' => [
+        //     'driver' => 'session',
+        //     'provider' => 'users',
+        // ],
+
+        // 'api' => [
+        //     'driver' => 'token',
+        //     'provider' => 'users',
+        //     'hash' => false,
+        // ],
+
+        'user' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'user',
         ],
 
-        'api' => [
-            'driver' => 'token',
-            'provider' => 'users',
-            'hash' => false,
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admin',
         ],
     ],
 
@@ -71,6 +81,10 @@ return [
             'model' => App\User::class,
         ],
 
+        'admin' => [
+            'driver' => 'eloquent',
+            'model'  => App\Model\Admin::class,
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
@@ -98,6 +112,12 @@ return [
             'table' => 'password_resets',
             'expire' => 60,
         ],
+
+        'admin' => [
+			'provider' => 'admin',
+			'table' => 'password_resets',
+			'expire' => 180,        //セッションが切れるまでの時間？
+		],
     ],
 
 ];
