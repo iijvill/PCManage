@@ -23,7 +23,7 @@ composer install
 ```
 次に、データベースを用意します。データベースを起動させておきます。  
 データベース名は
-> pcnamage
+> pcmanage
 
 です。
 
