@@ -137,13 +137,13 @@ class StockConfirmController extends Controller
     //スマホから登録ボタンを押された後の処理
     public function stockCheck(Request $request){
         //時間差でモードがオフになっている可能性を考える
-        $mode = SystemMode::where('id', 1)->first();
+        $mode = SystemMode::where('systemmode_id', 1)->first();
         if(!empty($mode) && $mode->run != 0){
             if($request->check){
                 $now = Carbon::now();
                 $now = $now->format('Y-m-d');
 
-                $stockckeck = Stockconfirmcheck::where('id', $request->id)->update([
+                $stockckeck = Stockconfirmcheck::where('stockconfirm_id', $request->id)->update([
                     'is_checked'    => 1,
                     'access_date' => $now,
                 ]);

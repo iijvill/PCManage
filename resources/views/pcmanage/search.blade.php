@@ -24,10 +24,10 @@
     <noscript><link rel="stylesheet" href="{{ asset('css/app.css') }}"></noscript>
 </head>
 <body>
-    <div class="uk-section">
+    {{-- <div class="uk-section"> --}}
         <div class="uk-child-width-expand uk-flex uk-flex-center" uk-grid>
             <div class="uk-margin-left uk-margin-right">
-                <div class="uk-card uk-card-default uk-card-body uk-box-shadow-large">
+                <div class="uk-card uk-card-default uk-card-body">
                     @if ($errors->any())
                         <div class="alert alert-danger">
                             <ul>
@@ -40,20 +40,11 @@
                     <form class="uk-form-horizontal uk-margin-small" method="POST">
                         <table class="uk-table table-bordered">
                             <tr>
-                                <td class="uk-width-medium">所属</td>
+                                <td class="uk-width-small">所属</td>
                                 <td colspan="2">
-                                    @php
-                                        $i = 1
-                                    @endphp
                                     @if (!empty($department_list) && count($department_list) != 0)
                                         @foreach ($department_list as $d)
-                                            <label class="uk-form-label"><input class="uk-checkbox" type="checkbox" name="department" value="{{$d->department_id}}"> {{$d->department_name}}</label>&nbsp;&nbsp;&nbsp;&nbsp;
-                                            @if ($i % 2 == 0)
-                                                <br>
-                                            @endif
-                                            @php
-                                                $i++
-                                            @endphp
+                                            <label class="uk-form-label"><input class="uk-checkbox" type="checkbox" name="department" value="{{$d->department_id}}"> {{$d->department_name}}</label>
                                         @endforeach
                                     @else
                                         <input class="uk-input uk-form-danger" type="text" value="情報を読み込めませんでした" readonly>
@@ -64,7 +55,7 @@
                                 <td>メーカー</td>
                                 <td colspan="2">
                                     @if (!empty($pcmaker_list) && count($pcmaker_list) != 0)
-                                        <select class="uk-select" name="pc_maker">
+                                        <select class="uk-select " name="pc_maker">
                                             @foreach ($pcmaker_list as $mk)
                                                 @if ($mk->pcmaker_id == 1)
                                                     <option value="{{$mk->pcmaker_id}}">全て</option>
@@ -127,15 +118,15 @@
                             <tr>
                                 <td>メモリ</td>
                                 <td colspan="2">
-                                    <input class="uk-input" type="text" name="pc_memory">
+                                    <input class="uk-input uk-width-small" type="text" name="pc_memory">  GB
                                 </td>
                             </tr>
                             <tr>
                                 <td rowspan="2">ストレージ</td>
-                                <td>タイプ</td>
+                                <td >タイプ</td>
                                 <td>
                                     @if (!empty($storagetype_list) && count($storagetype_list) != 0)
-                                        <select class="uk-select" name="storage_type">
+                                        <select class="uk-select uk-width-small" name="storage_type">
                                             @foreach ($storagetype_list as $t)
                                                 @if ($t->storage_id == 1)
                                                     <option value="{{$t->storage_id}}">全て</option>
@@ -152,7 +143,7 @@
                             <tr>
                                 <td>容量</td>
                                 <td>
-                                    <input class="uk-input uk-width-small" type="text" name="storage_capacity"> <b>GB</b>
+                                    <input class="uk-input uk-width-small" type="text" name="storage_capacity">  GB
                                 </td>
                             </tr>
                         </table>
@@ -164,7 +155,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    {{-- </div> --}}
 
     <script>
         $(document).ready(function(){

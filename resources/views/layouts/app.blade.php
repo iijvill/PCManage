@@ -113,5 +113,14 @@
     <div>
         @yield('content')
     </div>
+    <style>
+        .sort.desc:after {
+            content:"▼";
+        }
+        .sort.asc:after {
+            content:"▲";
+        }
+    </style>
+
 </body>
 </html>

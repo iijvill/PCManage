@@ -120,7 +120,7 @@
                 <div class="uk-flex uk-flex-center">
                     <form name="checkform" action="/stockconfirm/send" method="POST">
                         {{ csrf_field() }}
-                        <input type="hidden" name="id" value="{{$pcinfo->id}}">
+                        <input type="hidden" name="id" value="{{$specs->id}}">
                         <label class="uk-form-label"><input class="uk-checkbox" type="checkbox" name="check" id="check">このPCは存在しています</label>
                         <br>
                         <br>

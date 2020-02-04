@@ -24,19 +24,20 @@
                         <table class="uk-table uk-table-striped uk-table-small uk-table-hover uk-table-responsive table-bordered" id="pclists">
                             <thead>
                                 <tr>
-                                    <th class="uk-table-expand sort" data-sort="department">所属 ↕︎</th>
-                                    <th class="uk-table-expand sort" data-sort="username">使用者 ↕︎</th>
-                                    <th class="uk-width-small sort" data-sort="pcname">PC名 ↕︎</th>
-                                    <th >Officeライセンス ↕︎</th>
-                                    <th class="uk-table-expand sort" data-sort="pcmaker">メーカー ↕︎</th>
-                                    <th class="uk-table-expand sort" data-sort="pctype">筐体 ↕︎</th>
-                                    <th class="uk-width-small sort" data-sort="cpu">CPU ↕︎</th>
-                                    <th class="uk-width-small sort" data-sort="memory">メモリ ↕︎</th>
-                                    <th class="uk-width-small sort" data-sort="sttype">容量 ↕︎</th>
+                                    <th class="uk-table-expand sort" data-sort="department">所属</th>
+                                    <th class="uk-table-expand sort" data-sort="username">使用者</th>
+                                    <th class="uk-width-small sort" data-sort="pcname">PC名</th>
+                                    <th >Officeライセンス</th>
+                                    <th class="uk-table-expand sort" data-sort="pcmaker">メーカー</th>
+                                    <th class="uk-table-expand sort" data-sort="pctype">筐体</th>
+                                    <th class="uk-width-small sort" data-sort="cpu">CPU</th>
+                                    <th class="uk-width-small sort" data-sort="memory">メモリ</th>
+                                    <th class="uk-width-small sort" data-sort="sttype">容量</th>
                                     <th class="uk-table-expand sort" data-sort="antiname">ウイルス対策ソフト</th>
-                                    <th class="uk-table-expand sort" data-sort="antilimit">期限日</th>
-                                    <th class="uk-width-small">残り日数</th>
-                                    <th class="uk-table-expand">メモ</th>
+                                    {{-- <th class="uk-table-expand sort" data-sort="antilimit">期限日</th> --}}
+                                    <th class="uk-width-small sort" data-sort="limit">残り日数</th>
+                                    <th>シリアル番号</th>
+                                    {{-- <th class="uk-table-expand">メモ</th> --}}
                                 </tr>
                             </thead>
                             <tbody class="list">
@@ -103,8 +104,9 @@
                                         <td class="limit">
                                             {{$pc->limit}}
                                         </td>
-                                        <td></td>
-                                        <td>{!! nl2br(e($pc->memo))!!}</td>
+                                        {{-- <td></td> --}}
+                                        {{-- <td>{!! nl2br(e($pc->memo))!!}</td> --}}
+                                        <td>{{$pc->serial_number}}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -138,7 +140,7 @@
         $(document).ready(function(){
             //検索ボタン押下時
             $('#search').on('click', function(){
-                search_win = window.open('/search', null, 'width=960 , height=895');
+                search_win = window.open('/search', null, 'width=403 , height=870');
                 return false;
             });
 
@@ -148,7 +150,7 @@
                 date = limit_dates[i].textContent.trim();
                 diff = Math.ceil((Date.parse(date) - now.getTime())/86400000)
                 if(!isNaN(diff)){
-                    $("td:nth-last-of-type(2)")[i].innerText = diff;
+                    $("td:nth-last-of-type(2)")[i].innerText = diff + ' 日';
                     if(diff < 0){
                         //期限切れ
                         $("td:nth-last-of-type(2)")[i].style = "background-color:#d7003a; color:#302833";
@@ -170,8 +172,9 @@
     <script>
         //並べ替えの処理
         var options = {
-            valueNames: [ 'department', 'username', 'pcname', 'pcmaker', 'pctype', 'cpu', 'memory', 'sttype', 'antiname', 'antilimit'] //ソートするカラムのclass名っぽい
+            valueNames: [ 'department', 'username', 'pcname', 'pcmaker', 'pctype', 'cpu', 'memory', 'sttype', 'antiname', 'antilimit', 'limit'] //ソートするカラムのclass名っぽい
         };
         var userList = new List('pclists', options);
+        userList.sort('pcname', {order: 'asc'});
     </script>
 @endsection

@@ -71,7 +71,7 @@
     <script src="{{asset('js/alert.js')}}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            // submitAlert({form_id:'form_edit', dialog_title:'情報を変更します', dialog_text:'よろしいですか？', dialog_finish_title:'情報を変更しました', redirect_flg: true, redirect_url:'/employee'});
+            submitAlert({form_id:'form_edit', dialog_title:'情報を変更します', dialog_text:'よろしいですか？', dialog_finish_title:'情報を変更しました', redirect_flg: true, redirect_url:'/employee'});
         });
     </script>
 @endsection
