@@ -11,19 +11,20 @@ use App\Model\CpuInfo;
 use App\Model\AntivirusInfo;
 use App\Model\PctypeInfo;
 use App\Model\SystemMode;
+
 class InformationController extends Controller
 {
-
     //部署表示
     public function showDepartment(){
         $department = DepartmentInfo::get();
         $systemmode = SystemMode::get();
         $disp_data = [
             'department' => $department,
-            'mode'              => $systemmode,
+            'mode'       => $systemmode,
         ];
         return view('manage.department', $disp_data);
     }
+
     //部署編集
     public function editDepartment(Request $request){
         $list_id = $request->department_id;
@@ -36,7 +37,6 @@ class InformationController extends Controller
                 'department_name.*' => 'bail|required|max:100',
             ]);
                 
-            // dump($request->department_name[$list]);
             // 削除にチェックが入っているか確認
             if(is_array($list_del) && in_array($id, $list_del, true)){
                 //削除処理
@@ -59,8 +59,7 @@ class InformationController extends Controller
         $dp->fill($request->all())->save();
     }
 
-
-
+//-------------------------------------------------------------------------------
 
     //PCメーカー
     public function showPCMaker(){
@@ -68,11 +67,13 @@ class InformationController extends Controller
         $systemmode = SystemMode::get();
         $disp_data = [
             'pcmaker' => $pcmaker,
-            'mode'              => $systemmode,
+            'mode'    => $systemmode,
         ];
+
         return view('manage.pcmaker', $disp_data);
     }
 
+    //PCメーカーの編集
     public function editPCMaker(Request $request){
         $list_id = $request->pcmaker_id;
         $list_del = $request->del;
@@ -93,6 +94,7 @@ class InformationController extends Controller
 
     }
 
+    //PCメーカーの追加
     public function addPCMaker(Request $request){
         $this->validate($request,[
             'pcmaker_name' => 'bail|required|max:50'
@@ -101,22 +103,23 @@ class InformationController extends Controller
         $mk->fill($request->all())->save();
     }
 
+//-------------------------------------------------------------------------------
 
     //OS
     public function showOS(){
         $os = OsInfo::get();
         $systemmode = SystemMode::get();
         $disp_data = [
-            'os' => $os,
-            'mode'              => $systemmode,
+            'os'   => $os,
+            'mode' => $systemmode,
         ];
         return view('manage.os', $disp_data);
     }
 
+    //OSの編集
     public function editOS(Request $request){
         $list_id = $request->os_id;
         $list_del = $request->del;
-
 
         foreach($list_id as $list => $id){
             $this->validate($request, [
@@ -134,6 +137,7 @@ class InformationController extends Controller
 
     }
 
+    //OSの追加
     public function addOS(Request $request){
         $this->validate($request, [
             'os_name' => 'bail|required|max:30'
@@ -142,18 +146,20 @@ class InformationController extends Controller
         $os->fill($request->all())->save();
     }
 
+//-------------------------------------------------------------------------------
 
     //CPU
     public function showCPU(){
         $cpu = CpuInfo::get();
         $systemmode = SystemMode::get();
         $disp_data = [
-            'cpu' => $cpu,
-            'mode'              => $systemmode,
+            'cpu'  => $cpu,
+            'mode' => $systemmode,
         ];
         return view('manage.cpu', $disp_data);
     }
 
+    //CPUの編集
     public function editCPU(Request $request){
         $list_id = $request->cpu_id;
         $list_del = $request->del;
@@ -172,6 +178,7 @@ class InformationController extends Controller
         }
     }
 
+    //CPUの追加
     public function addCPU(Request $request){
         $this->validate($request, [
             'cpu_name' => 'bail|required|max:30'
@@ -180,20 +187,20 @@ class InformationController extends Controller
         $cpu->fill($request->all())->save();
     }
 
+//-------------------------------------------------------------------------------
 
-
-
-    //Antivirus
+    //ウイルス対策
     public function showAntivirus(){
         $antivirus = AntivirusInfo::get();
         $systemmode = SystemMode::get();
         $disp_data = [
             'antivirus' => $antivirus,
-            'mode'              => $systemmode,
+            'mode'      => $systemmode,
         ];
         return view('manage.antivirus', $disp_data);
     }
 
+    //ウイルス対策の編集
     public function editAntivirus(Request $request){
         $list_id = $request->antivirus_id;
         $list_del = $request->del;
@@ -214,6 +221,7 @@ class InformationController extends Controller
         }
     }
 
+    //ウイルス対策の追加
     public function addAntivirus(Request $request){
         $this->validate($request, [
             'antivirus_name' => 'bail|required|max:30'
@@ -222,20 +230,20 @@ class InformationController extends Controller
         $a->fill($request->all())->save();
     }
 
+//-------------------------------------------------------------------------------
 
-
-
-    //pctype
+    //PC筐体
     public function showPCtype(){
         $antivirus = PctypeInfo::get();
         $systemmode = SystemMode::get();
         $disp_data = [
             'pctype' => $antivirus,
-            'mode'              => $systemmode,
+            'mode'   => $systemmode,
         ];
         return view('manage.pctype', $disp_data);
     }
 
+    //PC筐体の編集
     public function editPCtype(Request $request){
         $list_id = $request->pctype_id;
         $list_del = $request->del;
@@ -255,6 +263,7 @@ class InformationController extends Controller
         }
     }
 
+    //PC筐体の追加
     public function addPCtype(Request $request){
         $this->validate($request, [
             'pctype_name' => 'bail|required|max:30'

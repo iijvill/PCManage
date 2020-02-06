@@ -16,7 +16,6 @@ class OSSeeder extends Seeder
             ['os_name' =>'Windows 10'],
             ['os_name' =>'Windows 7'],
             ['os_name' =>'macOS'],
-            ['os_name' =>'その他'],
         ]);
     }
 }

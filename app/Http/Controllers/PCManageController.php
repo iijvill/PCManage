@@ -18,12 +18,7 @@ use App\Model\SystemMode;
 use App\Model\CpuInfo;
 use App\Model\OsInfo;
 
-// use Maatwebsite\Excel\Facades\Excel;
-// use App\Imports\ExcelImport;
-
 use Carbon\Carbon;
-
-// use \Milon\pc_url\DNS2D;
 
 use Auth;
 use DB;
@@ -45,18 +40,16 @@ class PCManageController extends Controller
                         ->leftJoin('antivirus_infos', 'antivirus_relations.antivirus_id', '=', 'antivirus_infos.antivirus_id')
                         ->get();
 
+        $pc_counts      = PcInfo::count();   //PCの総数を取得
+        $pcstock_counts = PcInfo::where('department', 1)->count(); //在庫数を計算
 
-        $pc_counts = PcInfo::count();
-        $pcstock_counts = PcInfo::where('department', 1)->count();
-
-        // dd($anti_limit);
         $disp_data = [
             'specs_list'        => $specs,
             'pc_counts'         => $pc_counts,
             'pcstock_counts'    => $pcstock_counts,
             'mode'              => $systemmode,
         ];
-        // dd($specs);
+        
         return view('pcmanage.pclist', $disp_data);
     }
 
@@ -76,8 +69,8 @@ class PCManageController extends Controller
 
         $antivirus_relation = AntivirusRelation::where('antivirus_relations.antirelation_id', $id)->leftJoin('antivirus_infos', 'antivirus_relations.antivirus_id', '=', 'antivirus_infos.antivirus_id')->first();
         
-        $pc_counts = PcInfo::count();
-        $pcstock_counts = PcInfo::where('department', 1)->count();
+        $pc_counts      = PcInfo::count();   //PCの総数を取得
+        $pcstock_counts = PcInfo::where('department', 1)->count(); //在庫数を計算
 
         $disp_data = [
             'pcinfo_list'               => $pcinfo,
@@ -104,16 +97,18 @@ class PCManageController extends Controller
     public function edit(Request $request){
         //削除にチェックマークが入っていれば削除
         if(!empty($request->del_flg) && $request->del_flg == true){
-            AntivirusRelation::where('antirelation_id', $request->pcid)->delete();
 
-            PcInfo::where('id', $request->pcid)->delete();
-
-            PcSpec::where('spec_id', $request->pcid)->delete();
-
-            Stockconfirmcheck::where('stockconfirm_id', $request->pcid)->delete();
+            //トランザクションを貼る
+            DB::transaction(function() use($request){
+                AntivirusRelation::where('antirelation_id', $request->pcid)->delete();
+                PInfo::where('id', $request->pcid)->delete();
+                PcSpec::where('spec_id', $request->pcid)->delete();
+                Stcockconfirmcheck::where('stockconfirm_id', $request->pcid)->delete();
+            });
             return null;
         }
 
+        //バリデート。自作のバリデートクラスのCustomValidatorも使用
         $this->validate($request, [
             'pc_name'            => 'bail|required|max:50',
             'serial_number'      => 'nullable|regex:/^[a-zA-Z0-9-]+$/|max:50',
@@ -125,13 +120,13 @@ class PCManageController extends Controller
 
         //トランザクションを貼る！
         DB::transaction(function() use($request){
-            $pcinfo = new PcInfo();
-            $pcspec = new PcSpec();
+            $pcinfo    = new PcInfo();
+            $pcspec    = new PcSpec();
             $antivirus = new AntivirusRelation();
 
             $pcinfo->where('id', $request->pcid)->update([
                 'pc_name'        => $request->pc_name,
-                'pc_userid'     => $request->pc_user_id,
+                'pc_userid'      => $request->pc_user_id,
                 'department'     => $request->department,
                 'serial_number'  => $request->serial_number,
                 'office_license' => $request->office_license,
@@ -140,13 +135,13 @@ class PCManageController extends Controller
             ]);
 
             $pcspec->where('spec_id', $request->pcid)->update([
-                'os'                => $request->os,
-                'cpu'               => $request->cpu,
-                'memory'            => $request->memory,
-                'storage_type'      => $request->storage_type,
-                'storage_capacity'  => $request->storage_capacity,
-                'pc_type'        => $request->pc_type,
-                'pc_maker'       => $request->pc_maker,
+                'os'               => $request->os,
+                'cpu'              => $request->cpu,
+                'memory'           => $request->memory,
+                'storage_type'     => $request->storage_type,
+                'storage_capacity' => $request->storage_capacity,
+                'pc_type'          => $request->pc_type,
+                'pc_maker'         => $request->pc_maker,
             ]);
 
             $antivirus->where('antirelation_id', $request->pcid)->update([
@@ -160,18 +155,18 @@ class PCManageController extends Controller
 
     //PC追加画面を表示する
     public function showAddPage(){
-        $department  = DepartmentInfo::get();   //所属情報一覧を取得
-        $pctype      = PctypeInfo::get();       //PC筐体情報を「取得
-        $storagetype = StorageType::get();      //ストレージ情報を所得
-        $employee    = EmployeeInfo::get();     //社員情報を取得
-        $antivirus   = AntivirusInfo::get();    //ウイルス対策ソフト
-        $pcmaker     = PcmakerInfo::get();      //メーカー
-        $os          = OsInfo::get();           //OS
-        $cpu         = CpuInfo::get();          //CPU
+        $department  = DepartmentInfo::get();   
+        $pctype      = PctypeInfo::get();       
+        $storagetype = StorageType::get();      
+        $employee    = EmployeeInfo::get();     
+        $antivirus   = AntivirusInfo::get();   
+        $pcmaker     = PcmakerInfo::get();      
+        $os          = OsInfo::get();          
+        $cpu         = CpuInfo::get();          
         $systemmode  = SystemMode::get();
 
-        $pc_counts = PcInfo::count();
-        $pcstock_counts = PcInfo::where('department', 1)->count();
+        $pc_counts      = PcInfo::count();   //PCの総数を取得
+        $pcstock_counts = PcInfo::where('department', 1)->count(); //在庫数を計算
 
         $disp_data = [
             'department_list'    => $department,
@@ -185,7 +180,7 @@ class PCManageController extends Controller
             'cpu_list'           => $cpu,
             'pc_counts'          => $pc_counts,
             'pcstock_counts'     => $pcstock_counts,
-            'mode'              => $systemmode,
+            'mode'               => $systemmode,
         ];
         return view('pcmanage.pcadd',$disp_data);
     }
@@ -193,7 +188,7 @@ class PCManageController extends Controller
 
     //PCを追加する
     public function add(Request $request){
-
+        //バリデート。自作のバリデートクラスのCustomValidatorも使用
         $this->validate($request,[
             'pc_name'            => 'bail|required|unique:pc_infos,pc_name|max:50',
             'serial_number'      => 'nullable|regex:/^[a-zA-Z0-9-]+$/|max:50',
@@ -203,28 +198,29 @@ class PCManageController extends Controller
             'memo'               => 'nullable',
         ]);
 
-        //3テーブルに同時にデータを格納したいのでトランザクションを貼る
+        //同時にデータを格納したいのでトランザクションを貼る
         DB::transaction(function()use($request){
             $pcinfo = new PcInfo();
             $pcspec = new PcSpec();
             $anti_relation = new AntivirusRelation();
             $stockconfirmcheck = new Stockconfirmcheck();
-            $QRCodeURL = 'https://' .  config('const.default_domain') . '/stockconfirm/';
-            $id = $pcinfo->insertGetId([
+            $QRCodeURL = 'https://' .  config('const.default_domain') . '/stockconfirm/'; //QRコードに付与するURLの生成
+
+            $id = $pcinfo->insertGetId([ //$idにこれから追加するDBのid番号を挿入
                 'pc_name'        => $request->pc_name,
                 'pc_userid'      => $request->pc_user_id,
                 'department'     => $request->department,
                 'serial_number'  => $request->serial_number,
-                'pc_url'        => '',
+                'pc_url'         => '',
                 'office_license' => $request->office_license,
                 'memo'           => $request->memo,
             ]);
 
             //データ追加直後に、QRコードに付与するURLを追加する
             $pcinfo->where('id', $id)->update([
-                'pc_url'        => $QRCodeURL . $id,
-                'created_at'     => Carbon::now(),
-                'updated_at'     => Carbon::now(),
+                'pc_url'     => $QRCodeURL . $id,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
 
             $anti_relation->insert([
@@ -266,7 +262,6 @@ class PCManageController extends Controller
             'storagetype_list' => $storagetype_list,
             'os_list'          => $os_list,
             'cpu_list'         => $cpu_list,
-            
         ];
 
         return view('pcmanage.search', $disp_data);
@@ -292,8 +287,8 @@ class PCManageController extends Controller
         ]);
 
 
-        $pc_counts = PcInfo::count();
-        $pcstock_counts = PcInfo::where('department', 1)->count();
+        $pc_counts      = PcInfo::count();   //PCの総数を取得
+        $pcstock_counts = PcInfo::where('department', 1)->count(); //在庫数を計算
 
         $query = PcSpec::query();
         $specs = $this->_searchData($query, $request);
@@ -306,10 +301,8 @@ class PCManageController extends Controller
             'pc_counts'         => $pc_counts,
             'pcstock_counts'    => $pcstock_counts,
             'mode'              => $systemmode,
-            // 'anti_limit'        => $anti_limit,
         ];
 
-        // dd($disp_data);
         return view('pcmanage.pclist', $disp_data);
     }
 
@@ -319,9 +312,7 @@ class PCManageController extends Controller
         $systemmode = SystemMode::get();
 
         //アクセスの時の棚卸しチェック状況を調べる
-        
         $isAllChecked = Utility::checkStockconfirm();
-
 
         $disp_data = [
             'mode' => $systemmode,
@@ -332,7 +323,7 @@ class PCManageController extends Controller
     
 
 
-    //動的クエリを作成している
+    //動的クエリの作成処理
     function _searchData($query, $request){
 
         $query->join('pc_infos', 'pc_specs.spec_id', '=', 'pc_infos.id')
@@ -345,23 +336,20 @@ class PCManageController extends Controller
                         ->leftJoin('antivirus_relations', 'pc_infos.id', '=', 'antivirus_relations.antirelation_id')
                         ->leftJoin('antivirus_infos', 'antivirus_relations.antivirus_id', '=', 'antivirus_infos.antivirus_id');
 
-
         $req_depart = $request->department;
+
         if(!empty($req_depart)){
             $query->whereIn('department', explode(',', $req_depart));
-            // dump($query->toSql());
         }
 
         $req_maker = $request->pc_maker;
         if($req_maker != 1){//全て以外なら
             $query->where('pc_maker', '=', $req_maker);
-            // dump($query->toSql());
         }
 
         $req_type = $request->pc_type;
         if($req_type != 1){ //全て以外なら
             $query->where('pc_type', '=', $req_type);
-            // dump($query->toSql());
         }
 
         $req_os = $request->pc_os;
@@ -369,30 +357,26 @@ class PCManageController extends Controller
             $query->where('os', '=', $req_os);
         }
 
-
         $req_cpu = $request->pc_cpu;
         if($req_cpu != 1){
             $query->where('cpu', '=', $req_cpu);
-            // dump($query->toSql());
         }
 
         $req_mem = $request->pc_memory;
         if($req_mem != '' || $req_mem != null){
             $query->where('memory', '=', $req_mem);
-            // dump($query->toSql());
         }
 
         $req_s_type = $request->storage_type;
         if($req_s_type != 1){
             $query->where('storage_type', '=', $req_s_type);
-            // dump($query->toSql());
         }
 
         $req_scapa = $request->storage_capacity;
         if($req_scapa != '' || $req_scapa != null){
             $query->where('storage_capacity', '=', $req_scapa);
-            // dump($query->toSql());
         }
+
         $db_data = $query->get();
 
         return $db_data;

@@ -12,7 +12,6 @@ class QRController extends Controller
 {
     //QRコードを作成・表示させる
 
-
     public function showVerifyPage(){
         //QRコードを作成する前のページ。
         //このページでは作成後へのリンク・QRコード化するURLのアップデート・QRコード化するURL一覧を表示させる
@@ -24,7 +23,6 @@ class QRController extends Controller
         ];
         
         return view('qr.verify', $disp_data);
-    
     }
 
 
@@ -38,7 +36,6 @@ class QRController extends Controller
             $code = DNS2D::getBarcodeSVG($p->pc_url, 'QRCODE');
             array_push($qrarr, [$p->pc_name,$code]);
         }
-
 
         $disp_data = [
             'pcinfo' => $pcinfo,
@@ -62,8 +59,6 @@ class QRController extends Controller
                     'updated_at' => Carbon::now(),
                 ]);
             }
-        }else{
-            
         }
     }
 }

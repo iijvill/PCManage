@@ -41,7 +41,6 @@ class StockConfirmController extends Controller
          */
 
 
-        //ここからトランザクション
         if($mode_run == 0){
             //通常モードになった
             $stop = Carbon::now();
@@ -62,7 +61,6 @@ class StockConfirmController extends Controller
             ]);
 
             //stockconfirmcheckのis_checkedを全てfalseに変更する
-
             $stockconfirm = Stockconfirmcheck::get();
             
             foreach($stockconfirm as $st){
@@ -71,19 +69,18 @@ class StockConfirmController extends Controller
                 ]);
             }
         }
-        //ここまで
     
         return null;
     }
 
     //棚卸し時の在庫チェックページ
     public function showStockCheckPage(){
-        $pcinfo      = PcInfo::get();
-        $department  = DepartmentInfo::get();
-        $employee    = EmployeeInfo::get();
-        $pctype      = PctypeInfo::get();
-        $pcmaker     = PcmakerInfo::get();
-        $systemmode  = SystemMode::get();
+        $pcinfo            = PcInfo::get();
+        $department        = DepartmentInfo::get();
+        $employee          = EmployeeInfo::get();
+        $pctype            = PctypeInfo::get();
+        $pcmaker           = PcmakerInfo::get();
+        $systemmode        = SystemMode::get();
         $stockconfirmcheck = stockConfirmCheck::get();
     
 
@@ -126,9 +123,9 @@ class StockConfirmController extends Controller
         $antivirus_relation = AntivirusRelation::where('antivirus_relations.antirelation_id', $id)->leftJoin('antivirus_infos', 'antivirus_relations.antivirus_id', '=', 'antivirus_infos.antivirus_id')->first();
 
         $disp_data = [
-            'antivirus_relation'    => $antivirus_relation,
-            'mode'                  => $systemmode,
-            'specs'                 => $specs,
+            'antivirus_relation' => $antivirus_relation,
+            'mode'               => $systemmode,
+            'specs'              => $specs,
         ];
         
         return view('pcmanage.m_pcinfo', $disp_data);
