@@ -52,4 +52,26 @@ $app->singleton(
 |
 */
 
+
+//ホスト名でテスト・本番環境の.env(設定ファイル)を切り替える
+$environment = $app->detectEnvironment(function()
+{
+	$hostname = `hostname`;
+	$hostname = trim($hostname);
+
+	//テスト環境
+	if($hostname == 'inamura-iMac.local'){
+		return env('APP_ENV', '.env');
+	}elseif( $hostname == 'dev-php01' ){
+		return env('APP_ENV', '.env.testing');
+	//本番環境
+	}else{
+		return env('APP_ENV', '.env.production');
+	}
+});
+
+// //.envの読み込み
+$app->loadEnvironmentFrom($environment);
+
+
 return $app;
