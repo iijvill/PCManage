@@ -21,5 +21,6 @@ class DatabaseSeeder extends Seeder
         $this->call(SystemModeSeeder::class);
         $this->call(OSSeeder::class);
         $this->call(CPUSeeder::class);
+        $this->call(EmployeeSeeder::class);
     }
 }
